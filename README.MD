@@ -1,6 +1,6 @@
 # pdfduck
 
-> bulk pdf → structured csv. python backend + browser frontend.
+> bulk pdfs to structured csv
 
 ---
 
@@ -26,60 +26,6 @@ Backend (Railway - Python FastAPI)
   → returns structured JSON
   → falls back to text pattern matching if no tables
 ```
-
----
-
-## quick start
-
-### 1. deploy backend to railway
-
-```bash
-cd backend
-git init
-git add .
-git commit -m "initial commit"
-git remote add origin https://github.com/yourusername/pdfduck-backend.git
-git push -u origin main
-```
-
-then:
-
-1. go to [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub**
-2. select your repo → railway auto-deploys
-3. **Settings** → **Networking** → **Generate Domain**
-4. copy the URL (e.g., `pdfduck-backend-production.up.railway.app`)
-
-see `backend/README.md` for detailed deployment instructions.
-
-### 2. deploy frontend to cloudflare pages
-
-**Important:** Your Railway backend URL is injected as an environment variable during build. This keeps it private.
-
-1. push frontend files (including `build.sh`) to github
-2. go to [pages.cloudflare.com](https://pages.cloudflare.com)
-3. **Create project** → **Connect to Git** → select your repo
-4. build settings:
-   - **Build command:** `bash build.sh`
-   - **Build output directory:** `/`
-5. after first deploy, go to **Settings** → **Environment variables**
-6. add variable:
-   - **Name:** `BACKEND_URL`
-   - **Value:** `https://your-pdfduck-backend.up.railway.app` (your Railway URL)
-   - **Environment:** Production
-7. **Deployments** → **Retry deployment**
-
-see `DEPLOYMENT.md` for detailed Cloudflare Pages setup.
-
----
-
-## why environment variables?
-
-Your Railway backend URL is kept secret via Cloudflare Pages environment variables. This means:
-
-- ✓ backend URL never appears in public repo
-- ✓ only your deployed site has the real URL
-- ✓ people who clone the repo can't abuse your Railway instance
-- ✓ you can change the backend URL without touching code
 
 ---
 
@@ -114,17 +60,16 @@ Your Railway backend URL is kept secret via Cloudflare Pages environment variabl
 ```
 .
 ├── backend/
-│   ├── main.py              # FastAPI app
-│   ├── requirements.txt     # Python deps
-│   ├── Procfile             # Railway start command (optional)
-│   ├── railway.json         # Railway config
-│   └── README.md            # Backend deployment guide
+│   ├── main.py              
+│   ├── requirements.txt     
+│   ├── Procfile (optional)
+│   ├── railway.json         
+│   └── README.md            
 │
-├── index.html               # Frontend (Cloudflare Pages)
-├── favicon.ico              # Icon
-├── build.sh                 # Cloudflare Pages build script (injects env vars)
-├── DEPLOYMENT.md            # Cloudflare Pages deployment guide
-└── README.md                # This file
+├── index.html               
+├── favicon.ico              
+├── build.sh (injects env vars)
+└── README.md
 ```
 
 ---
@@ -140,49 +85,6 @@ Your Railway backend URL is kept secret via Cloudflare Pages environment variabl
 ✓ mobile responsive  
 ✓ no AI API costs — pure PDF parsing  
 ✓ secure backend URL via environment variables  
-
----
-
-## costs
-
-**railway free tier:**
-- 500 hours/month
-- $5 credit/month
-- enough for internal tooling processing hundreds of PDFs/day
-
-**cloudflare pages:**
-- unlimited bandwidth
-- unlimited requests
-- free forever
-
-**total cost: $0 for typical internal use.**
-
----
-
-## local development
-
-### backend
-
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn main:app --reload
-# runs on http://localhost:8000
-```
-
-### frontend
-
-just open `index.html` in a browser.
-
-**to test with local backend:**
-
-edit `index.html` line 318:
-
-```javascript
-const API_URL = typeof BACKEND_URL !== 'undefined' ? BACKEND_URL : 'http://localhost:8000';
-```
-
-then open `index.html` — it will hit your local backend.
 
 ---
 
@@ -241,32 +143,6 @@ curl -X POST http://your-backend/extract \
 
 ---
 
-## security notes
-
-- backend URL is injected during build, never committed to repo
-- for additional security, add rate limiting via Railway or Cloudflare Workers
-- Railway backends are public by default — consider adding auth headers if needed
-
----
-
-## upgrading to AI extraction
-
-if you want smarter extraction (handles messy PDFs, understands context, better field mapping), you can swap pdfplumber for:
-
-- **anthropic claude** (most accurate, ~$0.50 per 1000 pages)
-- **openai gpt-4o** (similar pricing, slightly worse on tables)
-- **ollama + llama** (free, runs locally on railway, slower and less accurate)
-
-just replace the extraction logic in `backend/main.py`. the frontend stays the same.
-
----
-
 ## contributing
 
 open source. do what you want. PRs welcome.
-
----
-
-## license
-
-mit
