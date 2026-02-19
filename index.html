@@ -715,10 +715,8 @@ extractBtn.addEventListener('click', async () => {
         Object.keys(row).forEach(k => {
           if (!headers.includes(k)) headers.push(k);
         });
-        extractedRows.push({ ...row, _filename: f.name });
+        extractedRows.push(row);
       });
-
-      if (!headers.includes('_filename')) headers.push('_filename');
 
       files[i].status = 'done';
       log(`✓ ${f.name} — ${data.data.length} record(s) via ${data.method}`, 'ok');
