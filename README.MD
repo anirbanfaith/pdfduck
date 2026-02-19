@@ -146,9 +146,3 @@ curl -X POST http://your-backend/extract \
 ## contributing
 
 open source. do what you want. PRs welcome.
-
----
-
-## license
-
-mit
